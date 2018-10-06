@@ -9,6 +9,7 @@ package com.miage.sqp;
  *
  * @author Tamer
  */
+import java.sql.Connection;
 import java.util.Arrays;
 
 import org.springframework.boot.CommandLineRunner;
@@ -29,6 +30,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class Application {
 
     public static void main(String[] args) {
+        DAO dao; 
+        dao = new DAO();
+        Connection con = dao.GetConnection();
+        
         SpringApplication.run(Application.class, args);
     }
 
