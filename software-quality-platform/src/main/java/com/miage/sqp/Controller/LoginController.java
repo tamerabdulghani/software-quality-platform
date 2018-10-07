@@ -25,7 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
  * @author kimphuong
  */
 @Controller
-public class LoginController {
+public class LoginController 
+{
     
     @RequestMapping("/authenticate")
     public String authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
