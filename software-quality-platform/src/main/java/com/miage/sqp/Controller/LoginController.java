@@ -5,8 +5,9 @@
  */
 package com.miage.sqp.Controller;
 
+import com.miage.models.User;
 import com.miage.sqp.model.Login;
-import com.miage.sqp.model.User;
+//import com.miage.sqp.model.Login;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,10 +35,9 @@ public class LoginController {
     }
     
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView showLogin(HttpServletRequest request, HttpServletResponse response) 
+    public ModelAndView showLogin() 
     {
-        ModelAndView mav = new ModelAndView("login");
-        mav.addObject("login", new User());
+        ModelAndView mav = new ModelAndView("Index");
         return mav;
     }
   
@@ -45,17 +45,15 @@ public class LoginController {
     public ModelAndView loginProcess(HttpServletRequest request, HttpServletResponse response,
     @ModelAttribute("login") Login login) 
     {
-      ModelAndView mav = null;
-      User user;
-      user = login.Validate(login);
-
-      if (null != user)
+      ModelAndView mav = new ModelAndView("");
+      Boolean IsUserExist = login.Validate(login);
+              
+      if (null != IsUserExist)
       {
-          mav = new ModelAndView("welcome");
-          mav.addObject("firstname", user.getFirstname());
+          mav = new ModelAndView("Welcome");
       } else 
       {
-          mav = new ModelAndView("login");
+          mav = new ModelAndView("Index");
           mav.addObject("message", "Username or Password is wrong!!");
       }
       return mav;

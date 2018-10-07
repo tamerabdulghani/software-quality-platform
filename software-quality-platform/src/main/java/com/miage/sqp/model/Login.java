@@ -5,15 +5,18 @@
  */
 package com.miage.sqp.model;
 
-import com.miage.sqp.model.User;
+import com.miage.models.User;
+import com.miage.repositories.UserRepository;
 
 /**
  *
  * @author kimphuong
  */
-public class Login {
-    String UserName;
-    String Password;
+public class Login
+{
+    private String UserName;
+    private String Password;
+    private UserRepository userRepository;
 
     public Login(String UserName, String Password) {
         this.UserName = UserName;
@@ -35,11 +38,16 @@ public class Login {
     public void setPassword(String Password) {
         this.Password = Password;
     }
-    
-    // To be implement - Connect to SQL 
-    public User Validate(Login log)
+     
+    public boolean Validate(Login login)
     {
-        return new User();
-    }
-    
+        for(User user : userRepository.findAll())
+        {
+            if (user.getUsername()==login.getUserName() && user.getPassword() == login.getPassword())
+            {
+                return true;
+            }
+        }
+        return false;
+    }    
 }
