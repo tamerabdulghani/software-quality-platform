@@ -6,7 +6,7 @@
 package com.miage.sqp.Controller;
 
 import com.miage.models.User;
-import com.miage.sqp.model.Login;
+import com.miage.viewmodel.Login;
 //import com.miage.sqp.model.Login;
 import java.io.IOException;
 import javax.servlet.ServletException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.miage.sqp.model;
+package com.miage.viewmodel;
 
 import com.miage.models.User;
 import com.miage.repositories.UserRepository;
