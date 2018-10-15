@@ -61,6 +61,7 @@ CREATE TABLE `file` (
   `fileName` varchar(30) NOT NULL,
   `extension` varchar(10) NOT NULL,
   `filePath` varchar(100) NOT NULL,
+  `fileLength` int(7) NOT NULL,
   `tags` varchar(100) NOT NULL,
   `pushTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `userId` int(11) DEFAULT NULL,
