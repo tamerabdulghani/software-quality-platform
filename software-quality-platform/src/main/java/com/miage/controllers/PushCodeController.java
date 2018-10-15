@@ -5,6 +5,7 @@
  */
 package com.miage.controllers;
 
+import com.miage.helpers.EmailNotificationHelper;
 import com.miage.repositories.FileRepository;
 import com.miage.repositories.UserRepository;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,10 +27,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.miage.helpers.storage.IStorageService;
 import com.miage.models.File;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import javax.mail.MessagingException;
 import org.springframework.core.env.Environment;
 
 /**
@@ -50,10 +50,10 @@ public class PushCodeController {
 
     @Autowired
     private Environment env;
-
+ 
     @Autowired
     public PushCodeController(IStorageService storageService) {
-        this.storageService = storageService;
+        this.storageService = storageService;              
     }
 
     /*
@@ -76,7 +76,7 @@ public class PushCodeController {
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
             @RequestParam("tags") String tags,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) throws MessagingException {
 
         storageService.store(file);
         redirectAttributes.addFlashAttribute("message",
@@ -87,20 +87,35 @@ public class PushCodeController {
         f.setExtension(file.getContentType());
         f.setTags(tags);
         f.setFilePath(System.getProperty("user.dir") + "/" + env.getProperty("storage.localfolder") + "/" + file.getOriginalFilename());
-        fileRepository.save(f);
-
+        fileRepository.save(f);        
+        sendNotification(f.getFileName());
         return "redirect:/";
     }
-
+    private void sendNotification(String fName) throws MessagingException
+    {
+        ArrayList<String> to = new ArrayList<>();        
+        userRepository.findAll().forEach(user -> to.add(user.getEmail())); //Populate list of recepicents
+        String fileName = fName; //Need file name
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date());
+        String username=null; //userRepository.findById(0).get().getUsername() Substitute ID        
+        String subjectMsg="New code avalible";
+        String link = "<a href='www.google.com'>link</a>";
+        String bodyMsg="User "+username+" at "+ timeStamp+
+                " added a new code file "+fileName +
+                " into the platform." +
+                "\n To get access check this "+ link;
+        EmailNotificationHelper.generateAndSendEmail(subjectMsg, bodyMsg, to);        
+    }
+    
     @PostMapping("/readypush")
-    public String markReadyPushCode(@RequestParam("fileId") Integer fileId) {
+    public String markReadyPushCode(@RequestParam("fileId") Integer fileId) throws MessagingException {
 
         File f = fileRepository.findById(fileId).get();
 
         f.setStatusId(1);
         f.setPushTime(new Timestamp(new Date().getTime()));
         fileRepository.save(f);
-
+        System.out.println("fromReadyPushCode");        
         return "redirect:/";
     }
 
