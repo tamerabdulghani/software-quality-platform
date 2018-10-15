@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +51,7 @@ public class PushCodeController {
 
     @Autowired
     private Environment env;
- 
+
     @Autowired
     public PushCodeController(IStorageService storageService) {
         this.storageService = storageService;              
@@ -108,14 +109,11 @@ public class PushCodeController {
     }
     
     @PostMapping("/readypush")
-    public String markReadyPushCode(@RequestParam("fileId") Integer fileId) throws MessagingException {
-
+    public String markReadyPushCode(@RequestParam("fileId") Integer fileId) {
         File f = fileRepository.findById(fileId).get();
-
         f.setStatusId(1);
         f.setPushTime(new Timestamp(new Date().getTime()));
         fileRepository.save(f);
-        System.out.println("fromReadyPushCode");        
         return "redirect:/";
     }
 
