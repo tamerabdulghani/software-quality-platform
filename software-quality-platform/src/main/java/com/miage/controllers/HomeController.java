@@ -31,7 +31,7 @@ public class HomeController {
         return "home";
     }
 
-    @PostMapping("/")
+    @PostMapping("/users")
 	User getConnectedUser(@RequestBody User connectedUser) {
             return userRepository.findById(connectedUser.getId()).get();
 	}
