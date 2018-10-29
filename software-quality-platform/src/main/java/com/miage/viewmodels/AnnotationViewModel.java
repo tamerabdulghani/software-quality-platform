@@ -13,14 +13,24 @@ public class AnnotationViewModel {
 
     private Integer fileId;
     private Integer reviewerId;
-    private boolean isWholeFile;
+    private String originContent;
     private String annotations;
 
-    public AnnotationViewModel(Integer fileId, Integer reviewerId, String annotations, boolean isWholeFile) {
+    public AnnotationViewModel(Integer fileId, Integer reviewerId, String annotations) {
         this.fileId = fileId;
         this.reviewerId = reviewerId;
         this.annotations = annotations;
-        this.isWholeFile = isWholeFile;
+    }
+
+    public AnnotationViewModel() {
+    }
+
+    public String getOriginContent() {
+        return originContent;
+    }
+
+    public void setOriginContent(String originContent) {
+        this.originContent = originContent;
     }
 
     public Integer getFileId() {
@@ -45,13 +55,5 @@ public class AnnotationViewModel {
 
     public void setAnnotations(String annotations) {
         this.annotations = annotations;
-    }
-
-    public boolean isIsWholeFile() {
-        return isWholeFile;
-    }
-
-    public void setIsWholeFile(boolean isWholeFile) {
-        this.isWholeFile = isWholeFile;
     }
 }
