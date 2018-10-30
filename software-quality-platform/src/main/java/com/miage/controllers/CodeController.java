@@ -124,7 +124,7 @@ public class CodeController {
     }
     
     
-    @GetMapping("/files/Phuong")
+    @GetMapping("/files/{UserID}")
     public String getUserFiles(Model model, @PathVariable Integer UserID) {
         for (File file:fileRepository.findAll())
         {

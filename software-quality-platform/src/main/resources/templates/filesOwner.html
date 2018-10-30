@@ -1,4 +1,5 @@
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head th:include="fragments/head :: head">
         <title id="pageTitle">STORM Review Platform</title>
     </head>
@@ -25,12 +26,12 @@
                             <tbody>
                                 <tr th:each="file, rowStat: ${files}"
                                     th:class="${file.status.statusName} == 'Accepted' ? 'table-success' : ''">
-                                    <td th:text="${file.fileId}">1</td>
-                                    <td th:text="${file.fileName}">Jack</td>
-                                    <td th:text="${file.status.statusName}">23</td>
-                                    <td th:text="${file.user.Username}">AVE N</td>
-                                    <td th:text="${file.tags}">AVE N</td>
-                                    <td th:text="${file.pushTime}">77587</td>
+                                    <td th:text="${file.fileId}"></td>
+                                    <td th:text="${file.fileName}"></td>
+                                    <td th:text="${file.status.statusName}"></td>
+                                    <td th:text="${file.user.Username}"></td>
+                                    <td th:text="${file.tags}"></td>
+                                    <td th:text="${file.pushTime}"></td>
                                 </tr>
                             </tbody>
                         </table>
