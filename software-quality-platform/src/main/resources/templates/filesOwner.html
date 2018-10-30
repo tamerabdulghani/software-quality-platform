@@ -1,10 +1,11 @@
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head th:include="fragments/head :: head">
         <title id="pageTitle">STORM Review Platform</title>
     </head>
     <body id="page-top">
+        <link href="/css/code/upload.css" rel="stylesheet" type="text/css">
         <div th:replace="fragments/header :: header"></div>
-
 
         <section id="connect">
             <div class="container">
@@ -20,32 +21,26 @@
                                     <th>Owner</th>
                                     <th>Tags</th>
                                     <th>Push Time</th>
-									<th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="file, rowStat: ${files}"
                                     th:class="${file.status.statusName} == 'Accepted' ? 'table-success' : ''">
-                                    <td th:text="${file.fileId}">1</td>
-                                    <td th:text="${file.fileName}">Jack</td>
-                                    <td th:text="${file.status.statusName}">23</td>
-                                    <td th:text="${file.user.Username}">AVE N</td>
-                                    <td th:text="${file.tags}">AVE N</td>
-                                    <td th:text="${file.pushTime}">77587</td>
-									<td>
-										<form action="#" th:action="@{/review/file/} + ${{file.fileId}}" method="get">
-											<button class="btn btn-primary" th:id="'table_entry_childs_button_' + ${file.fileId}" type="submit">
-												<i>Review</i>
-											</button>
-										</form>
-									</td> 
+                                    <td th:text="${file.fileId}"></td>
+                                    <td th:text="${file.fileName}"></td>
+                                    <td th:text="${file.status.statusName}"></td>
+                                    <td th:text="${file.user.Username}"></td>
+                                    <td th:text="${file.tags}"></td>
+                                    <td th:text="${file.pushTime}"></td>
                                 </tr>
                             </tbody>
                         </table>
+                        </a>
                     </div></div>
             </div>
         </section>
 
         <div th:replace="fragments/footer :: footer"></div>
+        <script src="/js/code/upload.js"></script>
     </body>
 </html>
