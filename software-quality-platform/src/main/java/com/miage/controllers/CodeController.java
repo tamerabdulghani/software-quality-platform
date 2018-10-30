@@ -147,18 +147,11 @@ public class CodeController {
         model.addAttribute("files", fileRepository.findAll());
         return "files";
     }
-<<<<<<< HEAD
-   
-        @GetMapping("/upload/{userId}")
+
+    @GetMapping("/upload/{userId}")
     public String getUserFiles(Model model, @PathVariable Integer userId) {
         List <File> results = new ArrayList<>();
 
-=======
-    
-    
-    @GetMapping("/files/{UserID}")
-    public String getUserFiles(Model model, @PathVariable Integer UserID) {
->>>>>>> commit #31-Display-Owner-Files
         for (File file:fileRepository.findAll())
         {
             if (Objects.equals(file.getUser().getId(), userId))
@@ -167,10 +160,10 @@ public class CodeController {
             }
         }
         model.addAttribute("files", results);
-
+        
         return "upload";
-
     }
+    
     /*
 >>>>>>> First commit
 
