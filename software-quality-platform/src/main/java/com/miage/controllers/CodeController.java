@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.mail.MessagingException;
 import org.springframework.core.env.Environment;
@@ -145,6 +147,25 @@ public class CodeController {
         model.addAttribute("files", fileRepository.findAll());
         return "files";
     }
+   
+        @GetMapping("/upload/{userId}")
+    public String getUserFiles(Model model, @PathVariable Integer userId) {
+        List <File> results = new ArrayList<>();
+
+        for (File file:fileRepository.findAll())
+        {
+            if (Objects.equals(file.getUser().getId(), userId))
+            {
+                results.add(file);
+            }
+        }
+        model.addAttribute("files", results);
+
+        return "upload";
+
+    }
+    /*
+>>>>>>> First commit
 
     @GetMapping("/upload/{userId}")
     public String getUserFiles(Model model, @PathVariable Integer userId) {
