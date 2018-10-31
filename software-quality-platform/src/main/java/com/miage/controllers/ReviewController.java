@@ -140,6 +140,7 @@ public class ReviewController {
         return "/code/files";
     }
     
+    // Display list of files for reviewer in the file.htlm page (exclude the owner's files)
     @GetMapping("/{userId}")
     public String getAllFile(Model model, @PathVariable Integer userId) {
         
