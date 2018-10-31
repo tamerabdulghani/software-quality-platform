@@ -30,6 +30,7 @@ import java.util.Objects;
 import javax.mail.MessagingException;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -165,18 +166,25 @@ public class CodeController {
     }
     
     /*
->>>>>>> First commit
-
-    @GetMapping("/upload/{userId}")
-    public String getUserFiles(Model model, @PathVariable Integer userId) {
-        for (File file : fileRepository.findAll()) {
-            if (Objects.equals(file.getUser().getId(), userId)) {
-                model.addAttribute("files", file);
+    @GetMapping("/{userID}")
+    public String getAllFile(Model model,@PathVariable Integer userId) {
+        
+        System.out.println("com.miage.controllers.ReviewController.getAllFile()");
+        List <File> results = new ArrayList<>();
+        Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "pushTime"));
+        System.out.println("com.miage2");
+        
+        for (File file:fileRepository.findAll(sort))
+        {
+            if (!Objects.equals(file.getUser().getId(), userId))
+            {
+                results.add(file);
+                System.out.println(file.getPushTime());
             }
         }
-
-        return "upload";
-
+        model.addAttribute("files", results);
+        
+        return "files";
     }
 
     /*
