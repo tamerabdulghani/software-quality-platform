@@ -166,30 +166,6 @@ public class CodeController {
     }
     
     /*
-    @GetMapping("/{userID}")
-    public String getAllFile(Model model,@PathVariable Integer userId) {
-        
-        System.out.println("com.miage.controllers.ReviewController.getAllFile()");
-        List <File> results = new ArrayList<>();
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "pushTime"));
-        System.out.println("com.miage2");
-        
-        for (File file:fileRepository.findAll(sort))
-        {
-            if (!Objects.equals(file.getUser().getId(), userId))
-            {
-                results.add(file);
-                System.out.println(file.getPushTime());
-            }
-        }
-        model.addAttribute("files", results);
-        
-        return "files";
-    }
-=======
->>>>>>> modify review page_sorted
-
-    /*
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
