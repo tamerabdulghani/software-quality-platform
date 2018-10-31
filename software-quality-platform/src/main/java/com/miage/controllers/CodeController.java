@@ -164,7 +164,6 @@ public class CodeController {
         
         return "upload";
     }
-<<<<<<< HEAD
     
     /*
     @GetMapping("/{userID}")
