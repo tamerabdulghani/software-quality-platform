@@ -27,6 +27,9 @@ public class Point {
     @Column(name = "value")
     private Integer value;
 
+    public Point() {
+    }
+
     public Point(Integer userId, Integer value) {
         this.userId = userId;
         this.value = value;

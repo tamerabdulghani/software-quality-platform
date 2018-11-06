@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.miage.repositories;
-
-import com.miage.models.Point;
-import org.springframework.data.repository.CrudRepository;
+package com.miage.enums;
 
 /**
  *
  * @author Tamer
  */
-public interface PointRepository extends CrudRepository<Point, Integer> {
-
+public enum LoseRules {
+    OWNER_ANNOTATE,
 }
