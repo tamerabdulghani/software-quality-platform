@@ -104,8 +104,9 @@ public class PointsService {
                 {
                     if (user.getId() != file.getUser().getId())
                     {
-                        int point = user.getPoint().getValue() - 10;
-                        user.getPoint().setValue(point); 
+                        //int point = user.getPoint().getValue() - 10;
+                        //user.getPoint().setValue(point); 
+                        decreasePointsByValue(user,LoseRules.REVIEWER_NONE,10); 
                     }
                 }
                 // The files causing penalty for members are just counted once
@@ -115,8 +116,9 @@ public class PointsService {
             // Rule 2: A reviewer does not finish review in 24 hours: -10 points
             if ((file.getStatus().getStatusName()== "InProgress") && (Math.abs(currentTime -  (long)file.getPushTime().getTime()) > TimeUnit.DAYS.toMillis(2)))
             {
-                int point = file.getUser().getPoint().getValue() - 10;
-                file.getUser().getPoint().setValue(point); 
+                //int point = file.getUser().getPoint().getValue() - 10;
+                //file.getUser().getPoint().setValue(point); 
+                decreasePointsByValue(file.getUser(),LoseRules.REVIEWER_LATE,10);
             }
         }        
     }
@@ -135,7 +137,10 @@ public class PointsService {
     public void decreasePointsByValue(User user, LoseRules rule, Integer value) {
         Point p = user.getPoint();
         switch (rule) {
-            case OWNER_ANNOTATE: {
+            case OWNER_ANNOTATE:
+            case REVIEWER_NONE: 
+            case REVIEWER_LATE:
+            {
                 if (p.getValue() > value) {
                     p.setValue(p.getValue() - value);
                 } else {
