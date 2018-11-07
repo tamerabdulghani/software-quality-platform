@@ -52,6 +52,7 @@ public class NotificationService {
     
     private String login;
     private String password;
+    private boolean serviceStatus;
     
     private String serviceAdress;        
     
@@ -71,7 +72,12 @@ public class NotificationService {
         login=env.getProperty("emailNotification.login");
         password=env.getProperty("emailNotification.password");                
         serviceAdress=env.getProperty("emailNotification.serviceAdress");
-        
+        serviceStatus=Boolean.getBoolean(env.getProperty("emailNotification.serviceStatus"));
+        if (serviceStatus)
+            System.out.println("Notifications enabled");
+        else
+            System.out.println("Notifications disabled. To switch on change "
+                    + "emailNotification.serviceStatus=true into application.properties");
         List<User> allUsers= userRepository.findAll();
         
         allUsersAdreses= new HashMap<>();
@@ -141,7 +147,8 @@ public class NotificationService {
         Transport transport = getMailSession.getTransport("smtp");
 
         transport.connect("smtp.gmail.com", login, password);
-        transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+        if (serviceStatus)
+            transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
         transport.close();
     }
     
