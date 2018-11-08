@@ -13,6 +13,7 @@ import com.miage.repositories.AnnotationRepository;
 import com.miage.repositories.FileRepository;
 import com.miage.repositories.PointRepository;
 import com.miage.repositories.UserRepository;
+import com.miage.services.LeaderBoardService;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/leaderBoard")
 public class PointsRestController {
-
+        
     @Autowired
     private UserRepository userRepository;
     
@@ -52,162 +54,144 @@ public class PointsRestController {
     @Autowired
     private AnnotationRepository annotationRepository;
     
+    @Autowired
+    private LeaderBoardService leaderBoardService;
     
-    @GetMapping("/getUserPoints")
-    public List<UserPoints> getInfoUserPoints() {
+    @GetMapping("/getUserInfo/{id}")
+    public List<UserInfo> getUserInfo(@PathVariable Integer id) {
+        List<UserInfo> userInfo = new ArrayList<>();
+
+        User selectedUser = leaderBoardService.getAllUsers()
+                .stream()
+                .filter(user -> user.getId() == id)
+                .findFirst()
+                .get();
+        Point point = leaderBoardService.getUserPoints(selectedUser);
+        
+        System.out.println(point);
+        int pointVal= point != null ? point.getValue() : 0;
+        boolean isHappy = leaderBoardService.isHappy(selectedUser);
+        List<String> badges = leaderBoardService.getAllBadges(selectedUser);
+
+        if (badges.size() != 0) {
+            badges.forEach(b -> userInfo.add(new UserInfo(b, selectedUser, pointVal, isHappy)));
+        } else {
+            userInfo.add(new UserInfo(null, selectedUser, pointVal, isHappy));
+        }
+
+        return userInfo;
+    }
+    
+    @GetMapping("/getLeaderBoard")
+    public List<UserPoints> getLeaderBoard() {
         List<UserPoints> userPoints = new ArrayList<>();        
-        int allUserPoints = getAllUserPoints();
-        int numOfUsers = userRepository.findAll().size();
-             
         
-        User userWithHighestPoints= getUserWithHighestPoint();
-        User userWithHighestNumberOfUploads=getUserWithHighestNumberOfUploads();
-        User userWithHighestNumberOfReviews=getUserWithHighestNumberOfReviews();
-        User userWithHighestNumberOfFilesWithoutAnnotations=getUserWithHighestNumberOfFilesWithoutAnnotations();                
-        
-        Hashtable<User, String> badges = new Hashtable<>();
-        badges.put(userWithHighestPoints, "Super Star");
-        badges.put(userWithHighestNumberOfUploads, "Best Coder");
-        badges.put(userWithHighestNumberOfReviews, "Master Reviewer");
-        badges.put(userWithHighestNumberOfFilesWithoutAnnotations, "Master Coder");
-                
-        pointRepository.findAll()
-                .forEach((Point p)->
-                {
-                    int userId=p.getUserId();
-                    User user = userRepository.findById(userId).get();
-                    boolean happy = (p.getValue() > allUserPoints/numOfUsers);                                        
-                    String badge = badges.get(user);                                                            
-                    userPoints.add( new UserPoints(userId, user.getUsername(),
-                            p.getValue(), badge, happy));
-                    Collections.sort(userPoints, (u1, u2) -> u1.point<u2.point ? 1 : -1);
-                });
+        leaderBoardService.getAllUsers()
+                .forEach(user->{
+                    System.out.println(user.getId());
+                    Point point = leaderBoardService.getUserPoints(user);
+                    int pointVal= point != null ? point.getValue() : 0;
+                    boolean isHappy = leaderBoardService.isHappy(user);
+                    userPoints.add(new UserPoints(user, pointVal, isHappy));
+                });                                    
         return userPoints;
     }
     
-    private Integer getAllUserPoints(){
-        Iterable<Point> points =  pointRepository.findAll();
-        Stream<Point> pointsStream = StreamSupport.stream(points.spliterator(), false);  
-        return pointsStream.mapToInt(p->p.getValue()).sum();
-    }
-    
-    private User getUserWithHighestPoint(){
-        Iterable<Point> points =  pointRepository.findAll();
-        Stream<Point> pointsStream = StreamSupport.stream(points.spliterator(), false);  
-        User userWithHighestPoints= userRepository.findById( 
-                pointsStream.max(Comparator.comparing(Point::getValue))
-                .orElseThrow(NoSuchElementException::new)
-                .getUserId()
-        ).get();
-        return userWithHighestPoints;
-    }
-    
-    private User getUserWithHighestNumberOfUploads(){
-        Iterable<File> files = fileRepository.findAll();
-        Stream<File> filesStream = StreamSupport.stream(files.spliterator(), false);
-        Map<User, Long> groupedFiles = filesStream.collect(
-                Collectors.groupingBy(File::getUser, Collectors.counting())
-        );
-        User userWithHighestNumberOfUploads = groupedFiles.entrySet().stream()
-                .max((entry1, entry2) -> entry1.getValue() < entry2.getValue() ? 1 : -1)
-                .get().getKey();
-        return userWithHighestNumberOfUploads;
-    }
-
-    private User getUserWithHighestNumberOfReviews() {
-        Iterable<Annotation> annotations = annotationRepository.findAll();
-        Stream<Annotation> annotationsStream = StreamSupport.stream(annotations.spliterator(), false);
-        Map<User, Long> grouppedAnnotations = annotationsStream.collect(
-                Collectors.groupingBy(Annotation::getUser, Collectors.counting())
-        );
-        User UserWithHighestNumberOfReviews = grouppedAnnotations.entrySet().stream()
-                .max((entry1, entry2) -> entry1.getValue() < entry2.getValue() ? 1 : -1)
-                .get().getKey();
-        return UserWithHighestNumberOfReviews;
-    }
-
-    private User getUserWithHighestNumberOfFilesWithoutAnnotations() {
-        Iterable<File> files = fileRepository.findAll();
-        Stream<File> filesStream = StreamSupport.stream(files.spliterator(), false);
+    @GetMapping("/getAllUsersWithBadges")
+    public List<UserBadge> getAllUsersWithBadges() {
+        List<UserBadge> usersWithBages = new ArrayList<>();
         
-        Iterable<Annotation> annotations = annotationRepository.findAll();
-        Stream<Annotation> annotationsStream = StreamSupport.stream(annotations.spliterator(), false);
-        List<Annotation> annotationsList = annotationsStream.collect(Collectors.toList());
+        leaderBoardService.getAllUsers()
+                .forEach(user -> 
+                {
+                    leaderBoardService.getAllBadges(user)
+                            .forEach( badge -> usersWithBages.add(new UserBadge(user, badge)));
+                });
         
-        List<File> filesWithoutAnnotations = filesStream.filter(f -> !annotationsList.contains(f))
-                .collect(Collectors.toList());
-        
-        Map<User,Long> grouppedFilesWithoutAnnotations = filesWithoutAnnotations
-                .stream()
-                .collect(
-                        Collectors.groupingBy(File::getUser,Collectors.counting())
-                );
-        
-        User userWithHighestNumberOfFilesWithoutAnnotations = grouppedFilesWithoutAnnotations
-                .entrySet()
-                .stream()
-                .max((entry1, entry2) -> entry1.getValue() < entry2.getValue() ? 1 : -1)
-                .get()
-                .getKey();
-        
-        return userWithHighestNumberOfFilesWithoutAnnotations;
+        return usersWithBages;
     }
-
-    class UserPoints {
-
-        private int id;       
-        private String Username;
-        private int point;
-        private boolean happy;
+        
+    public class UserBadge{
+        private User user;
         private String badge;
 
-        public UserPoints(int id, String Username, int point, String badge, boolean happy) {
-            this.id = id;
-            this.Username = Username;
-            this.point = point;
-            this.badge=badge;
-            this.happy=happy;
+        public UserBadge(User user, String badge) {
+            this.user = user;
+            this.badge = badge;
         }
 
-        public int getId() {
-            return id;
-        }
-
-        public String getUsername() {
-            return Username;
-        }
-
-        public int getPoint() {
-            return point;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public void setUsername(String Username) {
-            this.Username = Username;
-        }
-
-        public void setPoint(int point) {
-            this.point = point;
-        }
-        
-        public boolean isHappy() {
-            return happy;
+        public User getUser() {
+            return user;
         }
 
         public String getBadge() {
             return badge;
         }
 
-        public void setHappy(boolean happy) {
-            this.happy = happy;
+        public void setUser(User user) {
+            this.user = user;
+        }
+
+        public void setBadge(String badge) {
+            this.badge = badge;
+        }                
+    }
+    
+    public class UserPoints {
+        private User user;
+        private Integer points;
+        private boolean isHappy;
+
+        public UserPoints(User user, Integer points, boolean isHappy) {
+            this.user = user;
+            this.points = points;
+            this.isHappy = isHappy;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public Integer getPoints() {
+            return points;
+        }
+
+        public boolean isIsHappy() {
+            return isHappy;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
+
+        public void setPoints(Integer points) {
+            this.points = points;
+        }
+
+        public void setIsHappy(boolean isHappy) {
+            this.isHappy = isHappy;
+        }                
+    }
+    
+    public class UserInfo extends UserPoints{
+        private String badge;
+
+        public UserInfo(String badge, User user, Integer points, boolean isHappy) {
+            super(user, points, isHappy);
+            this.badge = badge;
+        }
+
+        public String getBadge() {
+            return badge;
         }
 
         public void setBadge(String badge) {
             this.badge = badge;
         }
+        
+        
+        
+        
         
     }
 }
