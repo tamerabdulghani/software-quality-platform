@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -62,11 +63,13 @@ public class LeaderBoardService {
         Iterable<Point> points =  pointRepository.findAll();
         Stream<Point> pointsStream = StreamSupport.stream(points.spliterator(), false);  
         
-        List<Point> pointsList=pointsStream.collect(Collectors.toList()); 
-        if (pointsList.contains(user))
-            return pointsList.get(pointsList.indexOf(user));
+        Optional<Point> result = pointsStream.filter(u -> Objects.equals(user.getId(), u.getUserId()))
+                .findFirst();
+        
+        if (result.isPresent())
+            return result.get();
         else
-            return new Point(user.getId(),0);                
+            return new Point(user.getId(),0);        
     }
     
     public List<String> getAllBadges(User user){        
@@ -115,7 +118,7 @@ public class LeaderBoardService {
       Stream<User> usersStream = StreamSupport.stream(users.spliterator(), false);  
       
       List<User> topUsers= usersStream
-              .filter(u -> usersIds.contains(u))
+              .filter(u -> usersIds.contains(u.getId()))
               .collect(Collectors.toList());
       return topUsers;
     }
@@ -171,9 +174,13 @@ public class LeaderBoardService {
         
         Iterable<Annotation> annotations = annotationRepository.findAll();
         Stream<Annotation> annotationsStream = StreamSupport.stream(annotations.spliterator(), false);
-        List<Annotation> annotationsList = annotationsStream.collect(Collectors.toList());
+        //List<Annotation> annotationsList = annotationsStream.collect(Collectors.toList());
+        List<Integer> annotatedFilesId = annotationsStream
+                .map(a-> a.getFile().getFileId())
+                .collect(Collectors.toList());
+                
         
-        List<File> filesWithoutAnnotations = filesStream.filter(f -> !annotationsList.contains(f))
+        List<File> filesWithoutAnnotations = filesStream.filter(f -> !annotatedFilesId.contains(f.getFileId()))
                 .collect(Collectors.toList());
         
         Map<User,Long> grouppedFilesWithoutAnnotations = filesWithoutAnnotations
