@@ -1,4 +1,4 @@
-INSERT INTO `user` (`userId`, `firstName`, `lastName`, `phone`, `email`, `username`) VALUES
+coINSERT INTO `user` (`userId`, `firstName`, `lastName`, `phone`, `email`, `username`) VALUES
 (1, 'Tamer', 'ABDULGHANI', '0682197891', 'Tamer.abdulghani@gmail.com', 'Tamer'),
 (2, 'Rayhane', 'Belaroussi', '068012693', 'belarayhane@gmail.com', 'Rayhane'),
 (3, 'Oluchi ', 'Onuorah', '0678321367', 'oluuchii@gmail.com', 'Oluchi'),
@@ -80,3 +80,11 @@ INSERT INTO `point` (`userId`, `value`) VALUES
 (5, 270),
 (6, 360),
 (7, 0);
+
+INSERT INTO `sprint` (`sprintId`, `startTime`,`endTime`,`goal`) VALUES 
+(1,'2018-10-01 00:00:00','2018-10-14 00:00:00',85),
+(2,'2018-10-15 00:00:00','2018-10-28 00:00:00',85),
+(3,'2018-10-29 00:00:00','2018-11-11 00:00:00',85),
+(4,'2018-11-12 00:00:00','2018-11-25 00:00:00',85),
+(5,'2018-11-26 00:00:00','2018-12-09 00:00:00',85),
+(6,'2018-12-10 00:00:00','2018-12-23 00:00:00',85);

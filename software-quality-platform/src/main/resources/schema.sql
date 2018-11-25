@@ -95,6 +95,18 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
+--
+-- Table structure for table `sprint`
+--
+
+CREATE TABLE `sprint` (
+  `sprintId` int(11) NOT NULL,
+  `startTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `endTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `goal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+
 -- Indexes for dumped tables
 --
 
@@ -160,6 +172,12 @@ ALTER TABLE `status`
 --
 ALTER TABLE `user`
   MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sprint`
+--
+ALTER TABLE `sprint`
+  MODIFY `sprintId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
