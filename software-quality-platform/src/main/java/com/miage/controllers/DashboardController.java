@@ -132,14 +132,14 @@ public class DashboardController {
     
     @GetMapping("/master/getGoal")
     @ResponseBody
-    public int getPercentageAnno(Model model, int sprintID)
+    public int getGoal(Model model, int sprintID)
     {
         return sprintRepository.findById(sprintID).get().getGoal();
     }
     
     @PostMapping("/master/setGoal")
     @ResponseBody
-    public void getPercentageAnno(Model model, int sprintID, int goal)
+    public void setGoal(Model model, int sprintID, int goal)
     {
         sprintRepository.findById(sprintID).get().setGoal(goal);
     }
