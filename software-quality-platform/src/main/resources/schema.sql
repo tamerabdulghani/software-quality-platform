@@ -127,6 +127,11 @@ ALTER TABLE `file`
   ADD KEY `statusId` (`statusId`);
 
 --
+-- Indexes for table `file`
+--
+ALTER TABLE `sprint`
+  ADD PRIMARY KEY (`sprintId`);
+--
 -- Indexes for table `point`
 --
 ALTER TABLE `point`

@@ -1,4 +1,4 @@
-coINSERT INTO `user` (`userId`, `firstName`, `lastName`, `phone`, `email`, `username`) VALUES
+INSERT INTO `user` (`userId`, `firstName`, `lastName`, `phone`, `email`, `username`) VALUES
 (1, 'Tamer', 'ABDULGHANI', '0682197891', 'Tamer.abdulghani@gmail.com', 'Tamer'),
 (2, 'Rayhane', 'Belaroussi', '068012693', 'belarayhane@gmail.com', 'Rayhane'),
 (3, 'Oluchi ', 'Onuorah', '0678321367', 'oluuchii@gmail.com', 'Oluchi'),

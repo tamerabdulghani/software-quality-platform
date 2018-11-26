@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-
 /**
  *
  * @author kimphuong
@@ -23,7 +22,8 @@ import javax.persistence.Table;
 @Entity // This tells Hibernate to make a table out of this class
 @Table(name = "sprint")
 public class Sprint {
-   @Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "sprintId")
     private Integer sprintId;
@@ -37,11 +37,14 @@ public class Sprint {
     @Column(name = "goal")
     private int goal;
 
-     // Id is auto generated
+    // Id is auto generated
     public Sprint(Timestamp startTime, Timestamp endTime, int goal) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.goal = goal;
+    }
+
+    public Sprint() {
     }
 
     public Integer getSprintId() {
